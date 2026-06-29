@@ -1,0 +1,20 @@
+# Java
+*.class
+*.jar
+target/
+
+# Maven
+.mvn/
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Environment
+.env
+
+# OS
+.DS_Store
