@@ -1,0 +1,75 @@
+services:
+  service-registry:
+    build: ./service-registry
+    ports:
+      - "8761:8761"
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8085:8085"
+    depends_on:
+      - service-registry
+
+  customer-service:
+    build: ./customer-service
+    ports:
+      - "8080:8080"
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - service-registry
+      - customer-db
+
+  account-service:
+    build: ./account-service
+    ports:
+      - "8081:8081"
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - service-registry
+      - account-db
+
+  transaction-service:
+    build: ./transaction-service
+    ports:
+      - "8082:8082"
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - service-registry
+      - transaction-db
+
+  customer-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: bank_customer
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5433:5432"
+
+  account-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: bank_account
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5434:5432"
+
+  transaction-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: bank_transaction
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5435:5432"
